@@ -1,2 +1,1 @@
-# UNO
-UNO made using Python
+Unsafe software inside

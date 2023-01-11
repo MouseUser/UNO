@@ -1,7 +1,7 @@
 #FPS UNO
+#BUG means to work on this or fix something
 #make a function that saves wins to a txt document and read data everytime the game starts (use the open() function)
 #add a start menu with a name input and optional house rules
-#cumburgah
 
 import random
 
@@ -31,20 +31,22 @@ class card():
 class deck(card):
     def __init__(self):
         self.numberOfCards=108
-        self.drawRule=None
+        self.drawrule=None
         self.drawnCard=None
-        self.topOfDiscards=None
+        self.topdisc=None
 
     def firstAction(self):
         for i in range():
             for j in range():
-                
-
-    def drawFunction(self,hand):
-        for i in range(0,self.drawRule):
+                topdisc=[self.colors[i],self.types[j]]
+    
+    def draw_function(self,hand,):
+        for i in range(0,self.drawrule):
             hand+=1
-            if self.drawncard==self.topOfDiscards
-            #fix this to be same color/number
+            print("you draw a card")
+            if self.drawncard==self.topdisc[0] or self.topdisc[1]:
+                print(f"you have {len.hand} cards in your hand")
+                break
 
 
 class player():
@@ -60,8 +62,10 @@ class opponent():
         self.name=None
 
 def main():
-
-
-
+    cardSelection()
+    firstAction()
+    draw_function()
+    
 
 main()
+#BUG add more functions and make the game work
