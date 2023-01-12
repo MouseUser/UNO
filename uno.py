@@ -17,6 +17,24 @@ class game():
         self.currentTurn=None
         self.highscores=None
 
+    def start(self):
+        startlist=["1.start game /n","2.change drawrule /n",'3.toggle 7s switch hands /n']
+        print("welcome to FPS UNO (FPS not included), please input your name")
+        self.playername=input()
+        print("type the number of your choice /n")
+        for i in range (0,3):
+            print(startlist[i])
+        bobsmom=str(input())
+
+        if "1" in bobsmom:
+            "the game will now start"
+        elif "2" in bobsmom:
+            print("input your drawrule(input how many times you want to take a card from the deck if you don't have a card you can play) /n")
+            deck.drawrule=int(input())
+        elif "3" in bobsmom:
+            print("when you play 7's they now allow you to switch hands with a player of your choice")
+
+
 class card():
     def __init__(self):
         self.color=None
@@ -26,45 +44,83 @@ class card():
         self.color=random.choice(colors)
         if self.color=="wild":
             self.type=random.choice(wilds)
+        else:
+            self.type=random.choice(types)
+        cardName=f"{self.color} {self.type}"
+
+        return cardName
 
 #4 colors, 10 numbers + specials, 108 in total
-class deck(card):
+class deck():
     def __init__(self):
         self.numberOfCards=108
-        self.drawrule=None
+        self.drawrule=1
         self.drawnCard=None
         self.topdisc=None
 
-    def firstAction(self):
-        for i in range():
-            for j in range():
-                topdisc=[self.colors[i],self.types[j]]
+    def firstDiscard(self):
+        self.topdisc=card.cardSelection(card)
+        print(f"The first card is {self.topdisc}")
     
-    def draw_function(self,hand,):
+    def draw_function(self):
+        self.drawrule=1
         for i in range(0,self.drawrule):
-            hand+=1
-            print("you draw a card")
-            if self.drawncard==self.topdisc[0] or self.topdisc[1]:
-                print(f"you have {len.hand} cards in your hand")
+            self.drawnCard=card.cardSelection(card)
+            print(f"You draw a card, your card is {self.drawnCard}")
+            
+            tempCard=self.drawnCard.split(" ")
+            tempCardTwo=self.topdisc.split(" ")
+            if tempCard[0]=="wild":
+                print(f"Your card is a wild, would you like to play it?")
+                playChoice=input("y/n ")
+                if playChoice=="y":
+                    #BUG make this play card
+                    return None
+                else:
+                    player.addToHand(self.drawnCard,player)
+                break
+            elif tempCard[0]==tempCardTwo[0] or tempCard[1]==tempCardTwo[1]:
+                print(f"Your card matches the {self.topdisc} in the discards, would you like to play it?")
+                playChoice=input("y/n ")
+                if playChoice=="y":
+                    #BUG make this play card
+                    return None
+                else:
+                    player.addToHand(self.drawnCard,player)
                 break
 
 
 class player():
     def __init__(self):
-        self.hand=[list]
+        self.hand=[]
         self.name=None
+
+    def startingHand(self):
+        for i in range(0,7):
+            self.hand.append(card.cardSelection(card))
+
+    def addToHand(card,self):
+
+        
 
 
 
 class opponent():
     def __init__(self):
-        self.hand=[list]
+        self.hand=[]
         self.name=None
 
+    def startingHand(self):
+        for i in range(0,7):
+            self.hand.append(card.cardSelection(card))
+
 def main():
-    cardSelection()
-    firstAction()
-    draw_function()
+    uno=game()
+    unoCard=card()
+    unoDeck=deck()
+    uno.start
+    Player=player()
+    Player.startingHand()
     
 
 main()
