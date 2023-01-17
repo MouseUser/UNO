@@ -3,15 +3,13 @@
 #make a function that saves wins to a txt document and read data everytime the game starts (use the open() function)
 #make a function to let the player play a card
 #let the player choose what to do with inputs (draw, play [cardname])
-
 import random
 
 colors=['red','yellow','green','blue','wild']
 types=['0','1','2','3','4','5','6','7','8','9','reverse','skip','draw two']
 wilds=['normal','draw four']
-
 aiNames=["HAL","Dave","ChatGPT","GLaDOS","Elvis","Bob","Jim","Rat"]
-    
+
 class player():
     def __init__(self):
         self.hand=[]
@@ -24,17 +22,16 @@ class player():
 
     def addToHand(card,self):
         self.hand.append(card)
-        
+
 class opponent():
     def __init__(self):
-        self.hand=None
+        self.opphand=[]
         self.name=random.choice(aiNames)
 
-    def startingHand(self):
-        for i in range(0,7): 
-            self.hand.append(card.cardSelection(card))
-
-
+    def oppstartingHand(self):
+        self.opphand=[]
+        for i in range(0,7):
+            self.opphand.append(card.cardSelection(card))
 
 class game():
     def __init__(self):
@@ -46,6 +43,7 @@ class game():
         self.playerList=[]
         self.reverse=False
 
+    
     def start(self):
         gamestart=False
         startlist="1.Start Game | 2.Edit House Rules | 3.View Highscores"
@@ -67,6 +65,11 @@ class game():
                     print("Input your drawrule (how many times you want to draw)")
                     deck.drawrule=int(input())
                 elif "2" in seconduserinput:
+                    value=0
+                    value+=1
+                    if value==2:
+                        print("Number 7 cards are now disabled")
+                        self.houseRules=False
                     print("Number 7 cards now allow you to switch hands with a player of your choice")
                     self.houseRules=True
  
@@ -75,11 +78,11 @@ class game():
 
     def begin_game():
         player.startingHand(player)
-        opponent.startingHand(opponent)
+        opponent.oppstartingHand(opponent)
         print("You draw your hand")
-        print(player.hand) #BUG
-
-
+        print(player.hand)
+        d=deck()
+        d.firstDiscard()
 
 
 
@@ -116,8 +119,6 @@ class deck():
         self.topdisc=card.cardSelection(card)
         print(f"The first card is {self.topdisc}")
     
-    
-
     def playCards(card,self): #BUG add more to reverse and draw two cards
         self.topdisc=card
         if "skip" in card:
@@ -163,10 +164,6 @@ class deck():
                     break
 
 
-
-
-
-
 def main():
     uno=game()
     unoCard=card()
@@ -177,12 +174,14 @@ def main():
     oppThree=opponent()
     uno.start()
 
-    #gameplay loop
+     #gameplay loop
     #while True:
         #make the game determine whos turn it is and 
     #make the game do the stuff in order
-    
 
 main()
+#BUG could add rules to main menu
+#BUG wild cards need to have a set(random)color if they are first or played by npcs
+#BUG in houserules: toggle 7s doesnt reflect current state of that houserule (still says enabled)
 #BUG add more functions and make the game work
 #guh
