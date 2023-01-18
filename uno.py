@@ -3,6 +3,7 @@
 #make a function that saves wins to a txt document and read data everytime the game starts (use the open() function)
 #make a function to let the player play a card
 #let the player choose what to do with inputs (draw, play [cardname])
+
 import random
 
 colors=['red','yellow','green','blue','wild']
@@ -25,22 +26,22 @@ class player():
 
 class opponent():
     def __init__(self):
-        self.opphand=[]
+        self.hand=[]
         self.name=random.choice(aiNames)
 
     def oppstartingHand(self):
-        self.opphand=[]
+        self.hand=[]
         for i in range(0,7):
-            self.opphand.append(card.cardSelection(card))
+            self.hand.append(card.cardSelection(card))
 
 class game():
     def __init__(self):
         self.firstTurn=None
-        self.houseRules=[None,]
+        self.houseRules=[None]
         self.currentTurn=None
         self.amountOfPlayers=4
         self.highscores=None
-        self.playerList=[]
+        self.playerList=[None]
         self.reverse=False
 
     
@@ -55,9 +56,15 @@ class game():
             userinput=str(input())
  
             if "1" in userinput:
+                #begins the game
                 print("the game will now start")
                 gamestart=True
-                game.begin_game()
+                player.startingHand(player)
+                opponent.oppstartingHand(opponent)
+                print("You draw your hand")
+                print(player.hand)
+
+
             elif "2" in userinput:
                 seconduserinput=input("1.edit drawrule 2.toggle 7s switch hands ")
  
@@ -75,20 +82,27 @@ class game():
  
             elif "3" in userinput:
                 print("FIX THIS WHEN YOU MAKE THE CODE THAT READS THE FILE") #BUG
+    
 
-    def begin_game():
-        player.startingHand(player)
-        opponent.oppstartingHand(opponent)
-        print("You draw your hand")
-        print(player.hand)
-        d=deck()
-        d.firstDiscard()
+    def playCards(card,self): #BUG add more to reverse and draw two cards
+        deck.topdisc=card
+        if "skip" in card:
+            self.currentTurn+=1
+        elif "reverse" in card:
+            self.currentTurn-=1
+            self.reverse=True
+            #make this count backward for turns
+        elif "draw two" in card:
+            if self.reverse==False:
+                self.currentTurn+=1
+            else:
+                self.currentTurn-=1
+            for i in range(0,len(game.playerList)):
+                #BUG make the next player draw two cards and skip their turn
+                return None
 
 
 
-    def firstPlayer(oppOne,oppTwo,oppThree,self):
-        self.playerList=[player.name,oppOne.name,oppTwo.name,oppThree.name]
-        self.firstTurn=random.randint(1,4)
 
 
 
@@ -113,31 +127,10 @@ class deck():
         self.numberOfCards=108
         self.drawrule=1
         self.drawnCard=None
-        self.topdisc=None
-
-    def firstDiscard(self):
         self.topdisc=card.cardSelection(card)
-        print(f"The first card is {self.topdisc}")
-    
-    def playCards(card,self): #BUG add more to reverse and draw two cards
-        self.topdisc=card
-        if "skip" in card:
-            self.currentTurn+=2
-        elif "reverse" in card:
-            self.currentTurn-=1
-            game.reverse=True
-            #make this count backward for turns
-        elif "draw two" in card:
-            if game.reverse==False:
-                self.currentTurn+=1
-            else:
-                self.currentTurn-=1
-            for i in range(0,len(game.playerList)):
-                #BUG make the next player draw two cards and skip their turn
-                return None
+
 
     def draw_function(self): #BUG make this hook into the play card function so you can play cards if you draw
-            self.drawrule=1
             for i in range(0,self.drawrule):
                 self.drawnCard=card.cardSelection(card)
                 print(f"You draw a card, your card is {self.drawnCard}")
@@ -163,6 +156,22 @@ class deck():
                         player.addToHand(self.drawnCard,player)
                     break
 
+    def checkForMatchingCard(card,self): #BUG finish this (also deck.topdisc doesnt exist for some reason)
+        for i in range(0,len(player.hand)):
+            tempCard=self.topdisc.split(" ")
+            tempCardTwo=player.hand[i].split(" ")
+            if tempCard[0]=="wild":
+                print(f"Your card is a wild, would you like to play it?")
+                playChoice=input("(y/n) ")
+                if playChoice=="y":
+                    deck.playCards()
+        gameInput=input(f"Your cards match the {self.topdisc} in the discards, would you like to play one or draw? (play/Draw) ")
+        if "play" in gameInput:
+            game.playCards(card)
+        elif "draw" in gameInput.lower() or "" in gameInput:
+            deck.draw_function()
+        
+
 
 def main():
     uno=game()
@@ -172,7 +181,13 @@ def main():
     oppOne=opponent()
     oppTwo=opponent()
     oppThree=opponent()
+    
     uno.start()
+    uno.playerList=[Player.name,oppOne.name,oppTwo.name,oppThree.name]
+    print(f"The first card is {unoDeck.topdisc}")
+    unoDeck.checkForMatchingCard(unoDeck)
+
+
 
      #gameplay loop
     #while True:
