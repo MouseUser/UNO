@@ -83,6 +83,15 @@ class game():
             elif "3" in userinput:
                 print("FIX THIS WHEN YOU MAKE THE CODE THAT READS THE FILE") #BUG
     
+ def firstturn(self):
+        d=deck()
+        if "1" in self.firstTurn:
+            action=input("it is your turn, type the card you would like to play, if you have no available cards, type draw")
+            if "draw" in input:
+                d.draw_function()
+        else:
+            print("the AI are taking their turns, please wait ")
+        return None
 
     def playCards(card,self): #BUG add more to reverse and draw two cards
         deck.topdisc=card
