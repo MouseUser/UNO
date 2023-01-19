@@ -33,6 +33,15 @@ class opponent():
         self.hand=[]
         for i in range(0,7):
             self.hand.append(card.cardSelection(card))
+            
+        def oppbrain(self):
+        tempCard=self.topdisc.split(" ")
+        for i in range(0,len(player.hand)):
+            tempCardTwo=player.hand[i].split(" ")
+        if tempCard[0] == tempCardTwo[0] or tempCard[1] == tempCardTwo[1]:
+            print(f"{self.name} has played a {tempCard[i]}")
+            #change to reflect AI name
+
 
 class game():
     def __init__(self):
