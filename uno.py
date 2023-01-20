@@ -1,9 +1,3 @@
-#FPS UNO
-#BUG means to work on this or fix something
-#make a function that saves wins to a txt document and read data everytime the game starts (use the open() function)
-#make a function to let the player play a card
-#let the player choose what to do with inputs (draw, play [cardname])
-
 import random
 
 colors=['red','yellow','green','blue','wild']
@@ -43,6 +37,41 @@ class opponent():
                 usedNames.append(oppName)
                 self.name=oppName
                 break
+
+    def oppBrain(self,topdisc):
+        availableCards=[]
+        if currentTurn==1:
+            for i in range(0,len(oppOneHand)):
+                tempCard=topdisc.split(" ")
+                tempCardTwo=oppOneHand[i].split(" ")
+                if tempCardTwo[0]=="wild" or tempCard[0]==tempCardTwo[0] or tempCard[1]==tempCardTwo[1]:
+                    availableCards.append(oppOneHand[i])
+            if len(availableCards)>=1:
+                game.playCards(random.choice(availableCards),game,currentTurn)
+            else:
+                oppOneHand.append(card.cardSelection(card))
+        if currentTurn==2:
+            for i in range(0,len(oppTwoHand)):
+                tempCard=topdisc.split(" ")
+                tempCardTwo=oppTwoHand[i].split(" ")
+                if tempCardTwo[0]=="wild" or tempCard[0]==tempCardTwo[0] or tempCard[1]==tempCardTwo[1]:
+                    availableCards.append(oppTwoHand[i])
+            if len(availableCards)>=1:
+                game.playCards(random.choice(availableCards),game,currentTurn)
+            else:
+                oppTwoHand.append(card.cardSelection(card))
+        if currentTurn==3:
+            for i in range(0,len(oppThreeHand)):
+                tempCard=topdisc.split(" ")
+                tempCardTwo=oppThreeHand[i].split(" ")
+                if tempCardTwo[0]=="wild" or tempCard[0]==tempCardTwo[0] or tempCard[1]==tempCardTwo[1]:
+                    availableCards.append(oppThreeHand[i])
+            if len(availableCards)>=1:
+                game.playCards(random.choice(availableCards),game,currentTurn)
+            else:
+                oppThreeHand.append(card.cardSelection(card))
+
+
         
 
 class game():
@@ -58,7 +87,7 @@ class game():
         print("You draw your hand")
         print(playerHand)
 
-    def turnOrder(self,current):
+    def turnOrder(self,currentTurn):
         if self.reverse is True:
             if currentTurn==4:
                 currentTurn=0
@@ -101,7 +130,7 @@ class game():
                     print(f"{playerList[currentTurn]} has been skipped")
 
                 currentTurn+=2
-            game.turnOrder(game)
+            game.turnOrder(game,currentTurn)
 
             
         elif "reverse" in card:
@@ -112,13 +141,13 @@ class game():
             else:
                 self.reverse=True
                 currentTurn-=1
-            game.turnOrder(game)
+            game.turnOrder(game,currentTurn)
         elif "draw two" in card:
             if self.reverse==False:
                 currentTurn+=1
             else:
                 currentTurn-=1
-            game.turnOrder(game)
+            game.turnOrder(game,currentTurn)
 
             if currentTurn==0:
                 print("You must draw two")
@@ -159,7 +188,7 @@ class game():
                 currentTurn-=1
             else:
                 currentTurn+=1
-            game.turnOrder(game)
+            game.turnOrder(game,currentTurn)
         
         elif card=="wild draw four":
             if currentTurn==0:
@@ -177,7 +206,7 @@ class game():
                 currentTurn-=1
             else:
                 currentTurn+=1
-            game.turnOrder(game)
+            game.turnOrder(game,currentTurn)
 
             if currentTurn==0:
                 print("You must draw four")
@@ -202,6 +231,14 @@ class game():
                 for i in range(0,4):
                     deck.drawnCard=card.cardSelection(card)
                     oppThreeHand.append(deck.drawnCard)
+        else:
+            print(f"The new discard is {topdisc}")
+            if self.reverse is True:
+                currentTurn-=1
+            else:
+                currentTurn+=1
+                
+            
 
     def gameplayLoop(self):
         global playerList
@@ -215,29 +252,39 @@ class game():
         oppTwo.nameSelection()
         oppThree.nameSelection()
 
-        game.start()
+        game.start(game)
         playerList=[player.name,oppOne.name,oppTwo.name,oppThree.name]
         print(f"The first card is {topdisc}")
-        deck.firstCardAction(deck,currentTurn,topdisc)
         currentTurn,topdisc=deck.firstCardAction(deck,currentTurn,topdisc)
         while True:
-            deck.checkForMatchingCard(topdisc)
-
-
+            deck.checkForMatchingCard(deck,topdisc)
+            print(f"The discards is now {topdisc}")
+            if len(playerHand)==0:
+                print("You win!")
+                break
+            elif len(oppOneHand)==0:
+                print(f"{playerList[1]} wins")
+                break
+            elif len(oppTwoHand)==0:
+                print(f"{playerList[2]} wins")
+                break
+            elif len(oppThreeHand)==0:
+                print(f"{playerList[3]} wins")
+                break
+            opponent.oppBrain(opponent,topdisc)
+            if len(playerHand)==0:
+                print("You win!")
+                break
+            elif len(oppOneHand)==0:
+                print(f"{playerList[0]} wins")
+                break
+            elif len(oppTwoHand)==0:
+                print(f"{playerList[1]} wins")
+                break
+            elif len(oppThreeHand)==0:
+                print(f"{playerList[3]} wins")
+                break
                      
-
-
-
-        
-
-
-    
-
-
-
-
-
-
 class card():
     def __init__(self):
         self.color=None
@@ -295,11 +342,11 @@ class deck():
                 if tempVar[1] in availableCards:
                     game.playCards(tempVar[1],game,currentTurn)
                 else:
-                    deck.checkForMatchingCard(deck)
+                    deck.checkForMatchingCard(deck,topdisc)
             elif "draw" in gameInput.lower():
                 deck.draw_function(deck)
             else:
-                deck.checkForMatchingCard(deck)
+                deck.checkForMatchingCard(deck,topdisc)
         else:
             print("You do not have any matching cards, you must draw")
             deck.draw_function(deck)
@@ -351,12 +398,7 @@ def main():
     global oppThreeHand
     global currentTurn
 
-    game.gameplayLoop()
+    game.gameplayLoop(game)
 
 
 main()
-#BUG could add rules to main menu
-#BUG wild cards need to have a set(random)color if they are first or played by npcs
-#BUG in houserules: toggle 7s doesnt reflect current state of that houserule (still says enabled)
-#BUG add more functions and make the game work
-#guh
