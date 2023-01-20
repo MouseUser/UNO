@@ -6,13 +6,6 @@
 
 import random
 
-global topdisc
-global playerList
-global playerHand
-global oppOneHand
-global oppTwoHand
-global oppThreeHand
-
 colors=['red','yellow','green','blue','wild']
 types=['0','1','2','3','4','5','6','7','8','9','reverse','skip','draw two']
 wilds=['normal','draw four']
@@ -22,7 +15,7 @@ playerHand=[]
 oppOneHand=[]
 oppTwoHand=[]
 oppThreeHand=[]
-
+currentTurn=0
 
 class player():
     def __init__(self):
@@ -53,9 +46,9 @@ class opponent():
 
 class game():
     def __init__(self):
-        self.currentTurn=0
         self.amountOfPlayers=4
         self.reverse=False
+        self.currentTurn=0
 
     def start(self):
         player.name=input("Welcome to UNO, please input your name: ")
@@ -68,11 +61,11 @@ class game():
 
     def turnOrder(self):
         if self.reverse is True:
-            if self.currentTurn==4:
-                self.currentTurn=0
+            if currentTurn==4:
+                currentTurn=0
         else:
-            if self.currentTurn==-1:
-                self.currentTurn=3
+            if currentTurn==-1:
+                currentTurn=3
     
     def firstturn(self): #deprecated (actions already done in main gameplay)
         if "1" in self.firstTurn:
@@ -82,45 +75,52 @@ class game():
         else:
             print("the AI are taking their turns, please wait ")
 
-    def playCards(card,self): #BUG add more to reverse and draw two cards
+    def playCards(card,self,currentTurn): #BUG add more to reverse and draw two cards
         topdisc=card
-        if self.currentTurn==0:
+        if currentTurn==0:
             playerHand.remove(card)
-        elif self.currentTurn==1:
+        elif currentTurn==1:
             oppOneHand.remove(card)
-        elif self.currentTurn==2:
+        elif currentTurn==2:
             oppTwoHand.remove(card)
-        elif self.currentTurn==3:
+        elif currentTurn==3:
             oppThreeHand.remove(card)
 
         if "skip" in card:
             if self.reverse is True:
-                self.currentTurn-=2
+                if currentTurn==0:
+                    print("You have been skipped")
+                else:
+                    print(f"{playerList[currentTurn]} has been skipped")
+
+                currentTurn-=2
             else:
-                self.currentTurn+=2
+                if currentTurn==0:
+                    print("You have been skipped")
+                else:
+                    print(f"{playerList[currentTurn]} has been skipped")
+
+                currentTurn+=2
             game.turnOrder(game)
 
-            if self.currentTurn==0:
-                print("You have been skipped")
-            else:
-                print(f"{playerList[self.currentTurn]} has been skipped")
+            
         elif "reverse" in card:
             print("The turn order has been reversed")
             if self.reverse is True:
                 self.reverse=False
-                self.currentTurn+=1
+                currentTurn+=1
             else:
                 self.reverse=True
-                self.currentTurn-=1
+                currentTurn-=1
             game.turnOrder(game)
         elif "draw two" in card:
             if self.reverse==False:
-                self.currentTurn+=1
+                currentTurn+=1
             else:
-                self.currentTurn-=1
+                currentTurn-=1
             game.turnOrder(game)
 
-            if self.currentTurn==0:
+            if currentTurn==0:
                 print("You must draw two")
                 newCards=[]
                 for i in range(0,2):
@@ -128,8 +128,87 @@ class game():
                     newCards.append(deck.drawnCard)
                     playerHand.append(deck.drawnCard)
                 print(f"You drew {newCards}")
-            elif self.currentTurn==1:
-                print(f"")
+            elif currentTurn==1:
+                print(f"{playerList[currentTurn]} must draw two")
+                for i in range(0,2):
+                    deck.drawnCard=card.cardSelection(card)
+                    oppOneHand.append(deck.drawnCard)
+            elif currentTurn==2:
+                print(f"{playerList[currentTurn]} must draw two")
+                for i in range(0,2):
+                    deck.drawnCard=card.cardSelection(card)
+                    oppTwoHand.append(deck.drawnCard)
+            elif currentTurn==3:
+                print(f"{playerList[currentTurn]} must draw two")
+                for i in range(0,2):
+                    deck.drawnCard=card.cardSelection(card)
+                    oppThreeHand.append(deck.drawnCard)
+        
+        elif card=="wild normal":
+            if currentTurn==0:
+                while True:
+                    color=input("What color would you like to choose? ")
+                    if color in colors:
+                        break
+            else:
+                color=random.choice(colors)
+            topdisc=f"{color} wild"
+            print(f"The discard is now {topdisc}")
+            
+            if self.reverse is True:
+                currentTurn-=1
+            else:
+                currentTurn+=1
+            game.turnOrder(game)
+        
+        elif card=="wild draw four":
+            if currentTurn==0:
+                while True:
+                    color=input("What color would you like to choose? ")
+                    if color in colors:
+                        break
+            else:
+                color=random.choice(colors)
+            topdisc=f"{color} wild"
+            print(f"The discard is now {topdisc}")
+            
+
+            if self.reverse is True:
+                currentTurn-=1
+            else:
+                currentTurn+=1
+            game.turnOrder(game)
+
+            if currentTurn==0:
+                print("You must draw four")
+                newCards=[]
+                for i in range(0,4):
+                    deck.drawnCard=card.cardSelection(card)
+                    newCards.append(deck.drawnCard)
+                    playerHand.append(deck.drawnCard)
+                print(f"You drew {newCards}")
+            elif currentTurn==1:
+                print(f"{playerList[currentTurn]} must draw four")
+                for i in range(0,4):
+                    deck.drawnCard=card.cardSelection(card)
+                    oppOneHand.append(deck.drawnCard)
+            elif currentTurn==2:
+                print(f"{playerList[currentTurn]} must draw four")
+                for i in range(0,4):
+                    deck.drawnCard=card.cardSelection(card)
+                    oppTwoHand.append(deck.drawnCard)
+            elif currentTurn==3:
+                print(f"{playerList[currentTurn]} must draw four")
+                for i in range(0,4):
+                    deck.drawnCard=card.cardSelection(card)
+                    oppThreeHand.append(deck.drawnCard)
+
+    #def gameplayLoop(self):
+
+                    
+
+
+        
 
 
     
@@ -186,7 +265,7 @@ class deck():
         availableCards=[]
         for i in range(0,len(playerHand)):
             tempCard=topdisc.split(" ")
-            tempCardTwo=player.Hand[i].split(" ")
+            tempCardTwo=playerHand[i].split(" ")
             if tempCardTwo[0]=="wild" or tempCard[0]==tempCardTwo[0] or tempCard[1]==tempCardTwo[1]:
                 availableCards.append(playerHand[i])
         if len(availableCards)>=1:
@@ -194,7 +273,7 @@ class deck():
             if "play" in gameInput.lower():
                 tempVar=gameInput.lower().split("play ")
                 if tempVar[1] in availableCards:
-                    game.playCards(tempVar[1],game)
+                    game.playCards(tempVar[1],game,currentTurn)
                 else:
                     deck.checkForMatchingCard(deck)
             elif "draw" in gameInput.lower():
@@ -205,8 +284,43 @@ class deck():
             print("You do not have any matching cards, you must draw")
             deck.draw_function(deck)
     
-    def firstCardAction(self):
-
+    def firstCardAction(self,currentTurn):
+        if "skip" in topdisc:
+            print("You have been skipped")
+            currentTurn+=1
+        elif "reverse" in topdisc:
+            print("Turn order has been reversed")
+            game.reverse=True
+        elif "draw two" in topdisc:
+            print("You must draw two")
+            newCards=[]
+            for i in range(0,2):
+                newCards.append(card.cardSelection(card))
+                playerHand.append(card.cardSelection(card))
+            print(f"You drew {newCards}")
+        elif topdisc=="wild normal":
+            while True:
+                    color=input("What color would you like to choose? ")
+                    if color in colors:
+                        break
+            topdisc=f"{color} wild"
+            print(f"The discard is now {topdisc}")
+        elif topdisc=="wild draw four":
+            while True:
+                    color=input("What color would you like to choose? ")
+                    if color in colors:
+                        break
+            topdisc=f"{color} wild"
+            print(f"The discard is now {topdisc}")
+            print("You must draw four")
+            newCards=[]
+            for i in range(0,4):
+                deck.drawnCard=card.cardSelection(card)
+                newCards.append(deck.drawnCard)
+                playerHand.append(deck.drawnCard)
+            print(f"You drew {newCards}")
+            currentTurn+=1
+        return currentTurn
 
 def main():
     uno=game()
@@ -216,6 +330,14 @@ def main():
     oppOne=opponent()
     oppTwo=opponent()
     oppThree=opponent()
+
+    global topdisc
+    global playerList
+    global playerHand
+    global oppOneHand
+    global oppTwoHand
+    global oppThreeHand
+    global currentTurn
 
     topdisc=card.cardSelection(card)
 
@@ -231,7 +353,8 @@ def main():
     uno.start()
     playerList=[player.name,oppOne.name,oppTwo.name,oppThree.name]
     print(f"The first card is {topdisc}")
-    game.playCards(topdisc)
+    deck.firstCardAction(deck,currentTurn)
+    currentTurn=deck.firstCardAction(deck,currentTurn)
     unoDeck.checkForMatchingCard()
 
 
