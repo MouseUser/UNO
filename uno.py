@@ -16,6 +16,7 @@ oppOneHand=[]
 oppTwoHand=[]
 oppThreeHand=[]
 currentTurn=0
+topdisc=[]
 
 class player():
     def __init__(self):
@@ -47,8 +48,6 @@ class opponent():
 class game():
     def __init__(self):
         self.amountOfPlayers=4
-        self.reverse=False
-        self.currentTurn=0
 
     def start(self):
         player.name=input("Welcome to UNO, please input your name: ")
@@ -59,7 +58,7 @@ class game():
         print("You draw your hand")
         print(playerHand)
 
-    def turnOrder(self):
+    def turnOrder(self,current):
         if self.reverse is True:
             if currentTurn==4:
                 currentTurn=0
@@ -76,6 +75,7 @@ class game():
             print("the AI are taking their turns, please wait ")
 
     def playCards(card,self,currentTurn): #BUG add more to reverse and draw two cards
+        
         topdisc=card
         if currentTurn==0:
             playerHand.remove(card)
@@ -203,9 +203,29 @@ class game():
                     deck.drawnCard=card.cardSelection(card)
                     oppThreeHand.append(deck.drawnCard)
 
-    #def gameplayLoop(self):
+    def gameplayLoop(self):
+        global playerList
+        oppOne=opponent()
+        oppTwo=opponent()
+        oppThree=opponent()
+        currentTurn=0
+        topdisc=card.cardSelection(card)
 
-                    
+        oppOne.nameSelection()
+        oppTwo.nameSelection()
+        oppThree.nameSelection()
+
+        game.start()
+        playerList=[player.name,oppOne.name,oppTwo.name,oppThree.name]
+        print(f"The first card is {topdisc}")
+        deck.firstCardAction(deck,currentTurn,topdisc)
+        currentTurn,topdisc=deck.firstCardAction(deck,currentTurn,topdisc)
+        while True:
+            deck.checkForMatchingCard(topdisc)
+
+
+                     
+
 
 
         
@@ -261,7 +281,7 @@ class deck():
                     else:
                         playerHand.append(self.drawnCard)
 
-    def checkForMatchingCard(self): #BUG finish this
+    def checkForMatchingCard(self,topdisc):
         availableCards=[]
         for i in range(0,len(playerHand)):
             tempCard=topdisc.split(" ")
@@ -284,7 +304,7 @@ class deck():
             print("You do not have any matching cards, you must draw")
             deck.draw_function(deck)
     
-    def firstCardAction(self,currentTurn):
+    def firstCardAction(self,currentTurn,topdisc):
         if "skip" in topdisc:
             print("You have been skipped")
             currentTurn+=1
@@ -320,17 +340,9 @@ class deck():
                 playerHand.append(deck.drawnCard)
             print(f"You drew {newCards}")
             currentTurn+=1
-        return currentTurn
+        return currentTurn,topdisc
 
 def main():
-    uno=game()
-    unoCard=card()
-    unoDeck=deck()
-    Player=player()
-    oppOne=opponent()
-    oppTwo=opponent()
-    oppThree=opponent()
-
     global topdisc
     global playerList
     global playerHand
@@ -339,31 +351,8 @@ def main():
     global oppThreeHand
     global currentTurn
 
-    topdisc=card.cardSelection(card)
+    game.gameplayLoop()
 
-    
-    oppOne.nameSelection()
-    oppTwo.nameSelection()
-    oppThree.nameSelection()
-
-    
-
-
-
-    uno.start()
-    playerList=[player.name,oppOne.name,oppTwo.name,oppThree.name]
-    print(f"The first card is {topdisc}")
-    deck.firstCardAction(deck,currentTurn)
-    currentTurn=deck.firstCardAction(deck,currentTurn)
-    unoDeck.checkForMatchingCard()
-
-
-
-    #gameplay loop
-    #while True:
-
-        #make the game determine whos turn it is and 
-    #make the game do the stuff in order
 
 main()
 #BUG could add rules to main menu
